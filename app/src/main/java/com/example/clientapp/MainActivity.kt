@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.clientapp.databinding.ActivityMainBinding
+import com.example.openssldemo.IMyAidlInterface
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -29,7 +30,8 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             isBound = true
             mService = IMyAidlInterface.Stub.asInterface(service)
-            Toast.makeText(applicationContext, "Connected to remote service", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Connected to remote service", Toast.LENGTH_SHORT)
+                .show()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -55,15 +57,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun handleRegister() {
+    override fun onStart() {
+        super.onStart()
         Toast.makeText(this, "Register", Toast.LENGTH_SHORT).show()
         val intent = Intent()
-        intent.setAction(REGISTER_ACTION)
+        //intent.setAction(REGISTER_ACTION)
         intent.setComponent(ComponentName(DATA_VAULT_PACKAGE, "$DATA_VAULT_PACKAGE.$SERVICE_NAME"))
-        intent.putExtra(PACKAGE_ID, packageName)
+        //intent.putExtra(PACKAGE_ID, packageName)
         bindService(intent, mConnection, BIND_AUTO_CREATE)
+    }
 
+    private fun handleRegister() {
+//        Toast.makeText(this, "Register", Toast.LENGTH_SHORT).show()
+//        val intent = Intent()
+//        intent.setAction(REGISTER_ACTION)
+//        intent.setComponent(ComponentName(DATA_VAULT_PACKAGE, "$DATA_VAULT_PACKAGE.$SERVICE_NAME"))
+//        intent.putExtra(PACKAGE_ID, packageName)
+//        bindService(intent, mConnection, BIND_AUTO_CREATE)
+        if(isBound) {
+            Toast.makeText(applicationContext, "OK can register", Toast.LENGTH_SHORT).show()
+            mService?.register(packageName)
+        }
     }
 
     private fun handleStore() {}
