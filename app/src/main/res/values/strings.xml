@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ClientApp</string>
+    <string name="register">REGISTER</string>
+    <string name="store_data">STORE DATA</string>
+    <string name="load_data">LOAD DATA</string>
+    <string name="enter_text_here">Enter text here</string>
+</resources>
