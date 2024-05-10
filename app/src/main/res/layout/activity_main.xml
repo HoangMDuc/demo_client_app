@@ -6,19 +6,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_text_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:inputType="text"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.138">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_text_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/enter_text_here"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/label_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="32dp"
+
+        android:text="@string/choose_the_type_of_data_you_want_to_store"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_text_layout" />
+
+    <Spinner
+        android:id="@+id/spinner_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/style_spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_type" />
+
+    <EditText
+        android:id="@+id/load_data_edt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="email, password, username"
+        app:layout_constraintTop_toBottomOf="@id/spinner_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:hint="@string/loaded_data_will_be_here"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+
+        android:editable="false"
+        />
     <Button
         android:id="@+id/register_button"
         android:layout_width="0dp"
-        android:padding="16dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="30dp"
+        android:padding="16dp"
         android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_type"  />
     <Button
         android:id="@+id/store_button"
         android:layout_width="0dp"
@@ -42,23 +101,9 @@
         android:text="@string/load_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/store_button" />
+        app:layout_constraintTop_toBottomOf="@+id/store_button"  />
 
 
 
-    <EditText
-
-        android:id="@+id/input_text"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:inputType="text"
-        android:padding="16dp"
-        android:layout_margin="32dp"
-        android:hint="@string/enter_text_here"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/load_button"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
