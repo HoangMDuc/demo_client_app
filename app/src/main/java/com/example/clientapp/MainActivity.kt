@@ -2,12 +2,18 @@ package com.example.clientapp
 
 import android.R
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -62,6 +68,28 @@ class MainActivity : AppCompatActivity() {
             registerButton.setOnClickListener { handleRegister() }
             storeButton.setOnClickListener { handleStore() }
             loadButton.setOnClickListener { handleLoad() }
+            inputTextEdit.setOnKeyListener { v, keyCode, _ -> handleKeyEvent(v, keyCode) }
+            inputTextEdit.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (s != null) {
+                        binding.storeButton.isEnabled = s.isNotEmpty()
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
+            })
         }
     }
 
@@ -73,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 //        intent.setComponent(ComponentName(DATA_VAULT_PACKAGE, "$DATA_VAULT_PACKAGE.$SERVICE_NAME"))
 //        //intent.putExtra(PACKAGE_ID, packageName)
 //        bindService(intent, mConnection, BIND_AUTO_CREATE)
-        Toast.makeText(this, "Register", Toast.LENGTH_SHORT).show()
+
 //        Toast.makeText(this, isBound.toString(), Toast.LENGTH_SHORT).show()
 //        Toast.makeText(this,( mService == null).toString(), Toast.LENGTH_SHORT).show()
         val intent = Intent()
@@ -86,11 +114,10 @@ class MainActivity : AppCompatActivity() {
     private fun handleRegister() {
 
         if (isBound) {
-            Toast.makeText(this, ("Call").toString(), Toast.LENGTH_SHORT).show()
-
             try {
-                mService?.register(packageName)
-
+                val response = mService?.register(packageName)
+                Log.d(TAG, response.toString())
+                Toast.makeText(this, response , Toast.LENGTH_SHORT).show()
             } catch (e: RemoteException) {
                 e.printStackTrace()
             }
@@ -102,7 +129,8 @@ class MainActivity : AppCompatActivity() {
         val dataType = binding.spinnerType.selectedItem.toString()
         if (isBound) {
             try {
-                mService?.store(packageName, dataValue, dataType)
+                val response = mService?.store(packageName, dataValue, dataType)
+                Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
             } catch (e: RemoteException) {
                 e.printStackTrace()
             }
@@ -114,6 +142,7 @@ class MainActivity : AppCompatActivity() {
         if (isBound) {
             try {
                 val dataValue = mService?.load(packageName, dataType)
+
                 binding.loadDataEdt.setText(dataValue)
 
             } catch (e: RemoteException) {
@@ -124,5 +153,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+    private fun handleKeyEvent(view : View, keyCode : Int) : Boolean  {
+        if(keyCode == KeyEvent.KEYCODE_ENTER) {
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+            return true
+        }
+        return false
+    }
 }
