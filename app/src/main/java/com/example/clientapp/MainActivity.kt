@@ -1,15 +1,18 @@
 package com.example.clientapp
 
 import android.R
+import android.R.attr
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -18,11 +21,13 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import com.example.clientapp.databinding.ActivityMainBinding
 import com.example.openssldemo.IMyAidlInterface
-import java.io.FileInputStream
-import java.security.KeyStore
-import java.security.KeyStoreException
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -91,8 +96,14 @@ class MainActivity : AppCompatActivity() {
 
             })
         }
-    }
 
+
+    }
+    private fun hdClick() {
+        val time : Long = binding.inputTextEdit.text.toString().toLong()
+        val formatter = SimpleDateFormat( "yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        binding.loadDataEdt.setText(formatter.format(time))
+    }
     override fun onStart() {
         super.onStart()
 //        Toast.makeText(this, "Register", Toast.LENGTH_SHORT).show()
@@ -108,6 +119,8 @@ class MainActivity : AppCompatActivity() {
         //intent.setAction(REGISTER_ACTION)
         intent.setComponent(ComponentName(DATA_VAULT_PACKAGE, "$DATA_VAULT_PACKAGE.$SERVICE_NAME"))
         intent.putExtra(PACKAGE_ID, packageName)
+
+
         bindService(intent, mConnection, BIND_AUTO_CREATE)
     }
 
@@ -115,7 +128,11 @@ class MainActivity : AppCompatActivity() {
 
         if (isBound) {
             try {
-                val response = mService?.register(packageName)
+                val icon = packageManager.getApplicationIcon(packageName)
+                val bitmap = icon.toBitmap()
+                val image = bitmapToString(bitmap)
+                val response = mService?.register(packageName, image)
+
                 Log.d(TAG, response.toString())
                 Toast.makeText(this, response , Toast.LENGTH_SHORT).show()
             } catch (e: RemoteException) {
@@ -130,6 +147,7 @@ class MainActivity : AppCompatActivity() {
         if (isBound) {
             try {
                 val response = mService?.store(packageName, dataValue, dataType)
+                binding.inputTextEdit.setText("")
                 Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
             } catch (e: RemoteException) {
                 e.printStackTrace()
@@ -161,4 +179,12 @@ class MainActivity : AppCompatActivity() {
         }
         return false
     }
+    private fun bitmapToString(bitmap: Bitmap) : String {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val b = stream.toByteArray()
+        val temp = Base64.encodeToString(b, Base64.DEFAULT)
+        return temp
+    }
+
 }

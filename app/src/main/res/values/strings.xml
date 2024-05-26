@@ -6,4 +6,5 @@
     <string name="enter_text_here">Enter text here</string>
     <string name="choose_the_type_of_data_you_want_to_store">Choose the type of data</string>
     <string name="loaded_data_will_be_here">Loaded data will be here</string>
+    <string name="demo">Demo</string>
 </resources>
